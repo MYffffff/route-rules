@@ -13,7 +13,7 @@ jobs:
       - name: Checkout codebase
         uses: actions/checkout@v4
         with:
-          path: code
+          path: ./
 
       - name: Checkout v2fly/geoip
         uses: actions/checkout@v4
@@ -47,9 +47,9 @@ jobs:
       - name: Build geoip.dat file
         run: |
           cd v2fly-geoip || exit 1
-          cp ../code/config/v2fly-geoip.json ./config.json
+          cp ../config/v2fly-geoip.json ./config.json
           go run ./ 
-          cd ../ && rm -rf v2fly-geoip && rm -rf code
+          cd ../ && rm -rf v2fly-geoip
 
 
       - name: Generate Zip, XZ, sha256
