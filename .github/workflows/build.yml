@@ -1,0 +1,81 @@
+name: Build geo-rules
+on:
+  workflow_dispatch:
+#  schedule:
+#    - cron: "0 12 * * *"
+
+jobs:
+  build:
+    name: Build geoip.dat
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout codebase
+        uses: actions/checkout@v4
+        with:
+          path: code
+
+      - name: Checkout v2fly/geoip
+        uses: actions/checkout@v4
+        with:
+          repository: v2fly/geoip
+          path: v2fly-geoip
+
+      - name: Set variables
+        run: |
+          echo "RELEASE_NAME=$(date +%Y%m%d%H%M%S)" >> $GITHUB_ENV
+          echo "TAG_NAME=$(date +%Y%m%d%H%M%S)" >> $GITHUB_ENV
+        shell: bash
+
+
+#      - name: Setup Go
+#        uses: actions/setup-go@v5
+#        with:
+#          go-version-file: code/go.mod
+
+#      - name: Smth
+#        run: |
+#          cd code || exit 1
+#          cd ../ && rm -rf code
+
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: v2fly-geoip/go.mod
+
+      - name: Build geoip.dat file
+        run: |
+          cd v2fly-geoip || exit 1
+          cp ../config/v2fly-geoip.json ./config.json
+          go run ./ 
+          cd ../ && rm -rf v2fly-geoip
+
+
+      - name: Generate Zip, XZ, sha256
+        run: |
+          cd output
+          sha256sum geoip.dat > geoip.dat.sha256sum
+          zip -9 geoip.dat.zip geoip.dat
+          sha256sum geoip.dat.zip > geoip.dat.zip.sha256sum
+          xz -z -9 -k geoip.dat
+          sha256sum geoip.dat.xz > geoip.dat.xz.sha256sum
+          cd ../
+
+
+      - name: Git push assets to "release" branch
+        run: |
+          git init
+          git config --local user.name "github-actions[bot]"
+          git config --local user.email "github-actions[bot]@noreply.github.com"
+          git checkout -b release
+          git add output/*.sha256sum output/geoip.dat output/geoip.dat.zip output/geoip.dat.xz
+          git commit -m "${{ env.RELEASE_NAME }}"
+          git remote add origin "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}"
+          git push -f -u origin release
+
+      - name: Release and upload assets
+        run: |
+          gh release create ${{ env.TAG_NAME }} --generate-notes --latest --title ${{ env.RELEASE_NAME }} ./geoip.dat ./geoip.dat.*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

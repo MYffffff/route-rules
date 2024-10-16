@@ -1,0 +1,32 @@
+{
+    "input": [
+      {
+        "type": "maxmindMMDB",
+        "action": "add",
+        "args": {
+          "uri": "../data/Country.mmdb"
+        }
+      },
+      {
+        "type": "text",
+        "action": "add",
+        "args": {
+          "inputDir": "../data/ips"
+        }
+      },
+      {
+        "type": "private",
+        "action": "add"
+      }
+    ],
+    "output": [
+      {
+        "type": "v2rayGeoIPDat",
+        "action": "output",
+        "args": {
+          "outputDir": "../output",
+          "outputName": "geoip.dat"
+        }
+      }
+    ]
+  }
