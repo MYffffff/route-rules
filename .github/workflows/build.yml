@@ -47,9 +47,9 @@ jobs:
       - name: Build geoip.dat file
         run: |
           cd v2fly-geoip || exit 1
-          cp ../config/v2fly-geoip.json ./config.json
+          cp ../code/config/v2fly-geoip.json ./config.json
           go run ./ 
-          cd ../ && rm -rf v2fly-geoip
+          cd ../ && rm -rf v2fly-geoip && rm -rf code
 
 
       - name: Generate Zip, XZ, sha256
