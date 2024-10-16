@@ -13,13 +13,13 @@ jobs:
       - name: Checkout codebase
         uses: actions/checkout@v4
         with:
-          path: ./
+          path: code
 
       - name: Checkout v2fly/geoip
         uses: actions/checkout@v4
         with:
           repository: v2fly/geoip
-          path: v2fly-geoip
+          path: code/v2fly-geoip
 
       - name: Set variables
         run: |
@@ -42,14 +42,14 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
-          go-version-file: v2fly-geoip/go.mod
+          go-version-file: code/v2fly-geoip/go.mod
 
       - name: Build geoip.dat file
         run: |
-          cd v2fly-geoip || exit 1
+          cd code/v2fly-geoip || exit 1
           cp ../config/v2fly-geoip.json ./config.json
           go run ./ 
-          cd ../ && rm -rf v2fly-geoip
+          cd ../../ && rm -rf code
 
 
       - name: Generate Zip, XZ, sha256
