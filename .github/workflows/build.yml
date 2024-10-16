@@ -54,13 +54,11 @@ jobs:
 
       - name: Generate Zip, XZ, sha256
         run: |
-          cd output
           sha256sum geoip.dat > geoip.dat.sha256sum
           zip -9 geoip.dat.zip geoip.dat
           sha256sum geoip.dat.zip > geoip.dat.zip.sha256sum
           xz -z -9 -k geoip.dat
           sha256sum geoip.dat.xz > geoip.dat.xz.sha256sum
-          cd ../
 
 
       - name: Git push assets to "release" branch
