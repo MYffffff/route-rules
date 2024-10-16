@@ -69,7 +69,7 @@ jobs:
           git config --local user.name "github-actions[bot]"
           git config --local user.email "github-actions[bot]@noreply.github.com"
           git checkout -b release
-          git add output/*.sha256sum output/geoip.dat output/geoip.dat.zip output/geoip.dat.xz
+          git add *.sha256sum geoip.dat geoip.dat.zip geoip.dat.xz
           git commit -m "${{ env.RELEASE_NAME }}"
           git remote add origin "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}"
           git push -f -u origin release

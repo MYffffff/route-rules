@@ -24,7 +24,7 @@
         "type": "v2rayGeoIPDat",
         "action": "output",
         "args": {
-          "outputDir": "../../output",
+          "outputDir": "../../",
           "outputName": "geoip.dat"
         }
       }
