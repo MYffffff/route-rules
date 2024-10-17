@@ -1,4 +1,4 @@
-name: Get geodata
+name: Get IPdata
 
 on:
   workflow_dispatch:
@@ -7,7 +7,7 @@ on:
 
 jobs:
   download-and-push:
-    name: Get geodata
+    name: Get IPdata
     runs-on: ubuntu-latest
 
     steps:
