@@ -51,9 +51,8 @@ jobs:
    
     - name: Commit changes
       run: |
-        git init
         git config --local user.name "github-actions[bot]"
         git config --local user.email "github-actions[bot]@noreply.github.com"
-        git add code/data/domains
+        git add code/data
         git commit -m "Updated on $(date)"
         git push origin master
