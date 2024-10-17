@@ -26,12 +26,13 @@ jobs:
     - name: Move file
       run: |
         mv get/Country.mmdb code/data
+        rm -rf get
 
     - name: Commit changes
       run: |
-        git init
+        cd code
         git config --local user.name "github-actions[bot]"
         git config --local user.email "github-actions[bot]@noreply.github.com"
-        git add code/data
+        git add data/Country.mmdb
         git commit -m "Updated on $(date)"
         git push origin master

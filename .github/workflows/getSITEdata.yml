@@ -16,7 +16,7 @@ jobs:
       with:
         path: code
 
-    - name: Checkout v2fly/geoip
+    - name: Checkout v2fly/domain-list-community
       uses: actions/checkout@v4
       with:
         repository: v2fly/domain-list-community
