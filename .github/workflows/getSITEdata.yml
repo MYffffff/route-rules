@@ -1,0 +1,58 @@
+name: Get geodata
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 0 */5 * *"
+
+jobs:
+  download-and-push:
+    name: Get geodata
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        path: code
+
+    - name: Checkout v2fly/geoip
+      uses: actions/checkout@v4
+      with:
+        repository: v2fly/domain-list-community
+        path: domains
+
+    - name: Fetch domains
+      run: |
+          rm -rf code/data/domains
+          mv domains/data code/data/domains
+          rm -rf domains
+
+
+    - name: Download file
+      run: wget -O rublacklist_raw https://antifilter.download/list/domains.lst
+
+    - name: Add smth
+      run: |
+          echo '# Added in request action' >> rublacklist
+          echo 'include:instagram' >> rublacklist
+          echo 'include:twitter' >> rublacklist
+          echo 'include:discord' >> rublacklist
+          echo 'rutracker.cc' >> rublacklist
+          echo 'adguard.com' >> rublacklist
+          echo 'vpngate.net' >> rublacklist
+          echo 'udemy.com' >> rublacklist
+          echo 'play.google.com' >> rublacklist
+          echo '' >> rublacklist
+          cat rublacklist_raw >> rublacklist
+          rm rublacklist_raw
+          mv rublacklist code/data/domains
+
+   
+    - name: Commit changes
+      run: |
+        git config --local user.name "github-actions[bot]"
+        git config --local user.email "github-actions[bot]@noreply.github.com"
+        git add .
+        git commit -m "Updated on $(date)"
+        git push origin master

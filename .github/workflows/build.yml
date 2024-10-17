@@ -1,8 +1,8 @@
 name: Build geo-rules
 on:
   workflow_dispatch:
-#  schedule:
-#    - cron: "0 12 * * *"
+  schedule:
+    - cron: "0 10 12 * *"
 
 jobs:
   build:
@@ -28,21 +28,11 @@ jobs:
         shell: bash
 
 
-#      - name: Setup Go
-#        uses: actions/setup-go@v5
-#        with:
-#          go-version-file: code/go.mod
-
-#      - name: Smth
-#        run: |
-#          cd code || exit 1
-#          cd ../ && rm -rf code
-
-
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
           go-version-file: code/v2fly-geoip/go.mod
+          cache-dependency-path: code/v2fly-geoip/go.sum
 
       - name: Build geoip.dat file
         run: |
@@ -50,7 +40,6 @@ jobs:
           cp ../config/v2fly-geoip.json ./config.json
           go run ./ 
           cd ../../ && rm -rf code
-
 
       - name: Generate Zip, XZ, sha256
         run: |

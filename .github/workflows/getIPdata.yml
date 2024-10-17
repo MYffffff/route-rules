@@ -1,0 +1,36 @@
+name: Get geodata
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 8 12 * *"
+
+jobs:
+  download-and-push:
+    name: Get geodata
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        path: code
+
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        repository: Dreamacro/maxmind-geoip
+        ref: release
+        path: get
+
+    - name: Move file
+      run: |
+        mv get/Country.mmdb code/data
+
+    - name: Commit changes
+      run: |
+        git config --local user.name "github-actions[bot]"
+        git config --local user.email "github-actions[bot]@noreply.github.com"
+        git add .
+        git commit -m "Updated on $(date)"
+        git push origin master
