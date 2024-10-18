@@ -1,0 +1,74 @@
+name: Build geoSite rules
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "40 14 * * 5"
+
+jobs:
+  build:
+    name: Build sing site rules
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout MYffffff/sing-geosite
+        uses: actions/checkout@v4
+        with:
+          repository: MYffffff/sing-geosite
+          path: rcode
+
+      - name: Set variables
+        run: |
+          echo "RELEASE_NAME=$(date +%Y%m%d%H%M%S)" >> $GITHUB_ENV
+          echo "TAG_NAME=$(date +%Y%m%d%H%M%S)" >> $GITHUB_ENV
+        shell: bash
+
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: rcode/go.mod
+          cache-dependency-path: rcode/go.sum
+
+      - name: Build
+        run: |
+          mkdir geosite sing-site
+          cd rcode || exit 1
+          go run ./ --geofile ../geosite/geosite.db --srsdir ../sing-site
+          cd ../ && rm -rf rcode
+
+      - name: Generate Zip, XZ, sha256
+        run: |
+          cd geosite
+          sha256sum geoip.db > geoip.db.sha256sum
+          zip -9 geoip.db.zip geoip.db
+          sha256sum geoip.db.zip > geoip.db.zip.sha256sum
+          xz -z -9 -k geoip.db
+          sha256sum geoip.db.xz > geoip.db.xz.sha256sum
+          cd ../
+
+
+      - name: Git push assets to "geosite" branch
+        run: |
+          cd geosite
+          git init
+          git config --local user.name "github-actions[bot]"
+          git config --local user.email "github-actions[bot]@noreply.github.com"
+          git branch -M geosite
+          git add *.sha256sum geoip.db geoip.db.zip geoip.db.xz
+          git commit -m "${{ env.RELEASE_NAME }}"
+          git remote add origin "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}"
+          git push -f -u origin geosite
+          cd ../
+
+      - name: Git push assets to "sing-site" branch
+        run: |
+          cd sing-site
+          git init
+          git config --local user.name "github-actions[bot]"
+          git config --local user.email "github-actions[bot]@noreply.github.com"
+          git branch -M sing-site
+          git add .
+          git commit -m "${{ env.RELEASE_NAME }}"
+          git remote add origin "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}"
+          git push -f -u origin sing-site
+          cd ../
