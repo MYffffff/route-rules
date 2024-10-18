@@ -54,7 +54,7 @@ jobs:
           git config --local user.name "github-actions[bot]"
           git config --local user.email "github-actions[bot]@noreply.github.com"
           git branch -M geosite
-          git add *.sha256sum geosite.db geosite.db.zip geosite.db.xz
+          git add geosite.db
           git commit -m "${{ env.RELEASE_NAME }}"
           git remote add origin "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}"
           git push -f -u origin geosite
