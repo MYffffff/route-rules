@@ -35,7 +35,7 @@ jobs:
           go-version-file: code/rcode/go.mod
           cache-dependency-path: code/rcode/go.sum
           
-      - name: Build
+      - name: Build geo.dat
         run: |
           cd code/rcode || exit 1
           go run ./ --datapath ../data/domains --outputdir ../../geosite
@@ -54,10 +54,10 @@ jobs:
           go mod tidy
           cd ../
 
-      - name: Build
+      - name: Build geo.db
         run: |
           cd rcode || exit 1
-          go run ./ --geofile ../geosite/geosite.db --srsdir ../sing-site
+          go run ./ --geofile ../geosite/geosite.db --srsdir ../sing-site --inputfile ../geosite/geosite.dat
           cd ../ && rm -rf rcode
 
       - name: Generate Zip, XZ, sha256
