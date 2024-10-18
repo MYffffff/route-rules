@@ -39,11 +39,11 @@ jobs:
       - name: Generate Zip, XZ, sha256
         run: |
           cd geosite
-          sha256sum geoip.db > geoip.db.sha256sum
-          zip -9 geoip.db.zip geoip.db
-          sha256sum geoip.db.zip > geoip.db.zip.sha256sum
-          xz -z -9 -k geoip.db
-          sha256sum geoip.db.xz > geoip.db.xz.sha256sum
+          sha256sum geosite.db > geosite.db.sha256sum
+          zip -9 geosite.db.zip geosite.db
+          sha256sum geosite.db.zip > geosite.db.zip.sha256sum
+          xz -z -9 -k geosite.db
+          sha256sum geosite.db.xz > geosite.db.xz.sha256sum
           cd ../
 
 
@@ -54,7 +54,7 @@ jobs:
           git config --local user.name "github-actions[bot]"
           git config --local user.email "github-actions[bot]@noreply.github.com"
           git branch -M geosite
-          git add *.sha256sum geoip.db geoip.db.zip geoip.db.xz
+          git add *.sha256sum geosite.db geosite.db.zip geosite.db.xz
           git commit -m "${{ env.RELEASE_NAME }}"
           git remote add origin "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}"
           git push -f -u origin geosite
