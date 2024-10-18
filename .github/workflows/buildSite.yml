@@ -6,22 +6,47 @@ on:
 
 jobs:
   build:
-    name: Build sing site rules
+    name: Build geoSite rules
     runs-on: ubuntu-latest
 
     steps:
+      - name: Set variables
+        run: |
+          echo "RELEASE_NAME=$(date +%Y%m%d%H%M%S)" >> $GITHUB_ENV
+          echo "TAG_NAME=$(date +%Y%m%d%H%M%S)" >> $GITHUB_ENV
+          mkdir geosite sing-site
+        shell: bash
+
+
+      - name: Checkout codebase
+        uses: actions/checkout@v4
+        with:
+          path: code
+
+      - name: Checkout MYffffff/domain-list-ru
+        uses: actions/checkout@v4
+        with:
+          repository: MYffffff/domain-list-ru
+          path: code/rcode
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: code/rcode/go.mod
+          cache-dependency-path: code/rcode/go.sum
+          
+      - name: Build
+        run: |
+          cd code/rcode || exit 1
+          go run ./ --datapath ../data/domains --outputdir ../../geosite
+          cd ../../ && rm -rf code
+
+
       - name: Checkout MYffffff/sing-geosite
         uses: actions/checkout@v4
         with:
           repository: MYffffff/sing-geosite
           path: rcode
-
-      - name: Set variables
-        run: |
-          echo "RELEASE_NAME=$(date +%Y%m%d%H%M%S)" >> $GITHUB_ENV
-          echo "TAG_NAME=$(date +%Y%m%d%H%M%S)" >> $GITHUB_ENV
-        shell: bash
-
 
       - name: Setup Go
         uses: actions/setup-go@v5
@@ -31,7 +56,6 @@ jobs:
 
       - name: Build
         run: |
-          mkdir geosite sing-site
           cd rcode || exit 1
           go run ./ --geofile ../geosite/geosite.db --srsdir ../sing-site
           cd ../ && rm -rf rcode
@@ -39,11 +63,20 @@ jobs:
       - name: Generate Zip, XZ, sha256
         run: |
           cd geosite
+
           sha256sum geosite.db > geosite.db.sha256sum
+          sha256sum geosite.dat > geosite.dat.sha256sum
+
           zip -9 geosite.db.zip geosite.db
           sha256sum geosite.db.zip > geosite.db.zip.sha256sum
+          zip -9 geosite.dat.zip geosite.dat
+          sha256sum geosite.dat.zip > geosite.dat.zip.sha256sum
+
           xz -z -9 -k geosite.db
           sha256sum geosite.db.xz > geosite.db.xz.sha256sum
+          xz -z -9 -k geosite.dat
+          sha256sum geosite.dat.xz > geosite.dat.xz.sha256sum
+
           cd ../
 
 
@@ -54,7 +87,7 @@ jobs:
           git config --local user.name "github-actions[bot]"
           git config --local user.email "github-actions[bot]@noreply.github.com"
           git branch -M geosite
-          git add *.sha256sum geosite.db geosite.db.zip geosite.db.xz
+          git add .
           git commit -m "${{ env.RELEASE_NAME }}"
           git remote add origin "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}"
           git push -f -u origin geosite
