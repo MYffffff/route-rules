@@ -63,7 +63,6 @@ jobs:
       - name: Generate Zip, XZ, sha256
         run: |
           cd geosite
-
           sha256sum geosite.db > geosite.db.sha256sum
           sha256sum geosite.dat > geosite.dat.sha256sum
 
@@ -76,7 +75,6 @@ jobs:
           sha256sum geosite.db.xz > geosite.db.xz.sha256sum
           xz -z -9 -k geosite.dat
           sha256sum geosite.dat.xz > geosite.dat.xz.sha256sum
-
           cd ../
 
 

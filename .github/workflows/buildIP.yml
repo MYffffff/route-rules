@@ -5,11 +5,19 @@ on:
     - cron: "0 10 12 * *"
 
 jobs:
-  build:
+  build-geo:
     name: Build geoip.dat
     runs-on: ubuntu-latest
 
     steps:
+      - name: Set variables
+        run: |
+          echo "RELEASE_NAME=$(date +%Y%m%d%H%M%S)" >> $GITHUB_ENV
+          echo "TAG_NAME=$(date +%Y%m%d%H%M%S)" >> $GITHUB_ENV
+          mkdir geoip sing-ip
+        shell: bash
+
+
       - name: Checkout codebase
         uses: actions/checkout@v4
         with:
@@ -20,13 +28,6 @@ jobs:
         with:
           repository: v2fly/geoip
           path: code/v2fly-geoip
-
-      - name: Set variables
-        run: |
-          echo "RELEASE_NAME=$(date +%Y%m%d%H%M%S)" >> $GITHUB_ENV
-          echo "TAG_NAME=$(date +%Y%m%d%H%M%S)" >> $GITHUB_ENV
-        shell: bash
-
 
       - name: Setup Go
         uses: actions/setup-go@v5
@@ -39,24 +40,69 @@ jobs:
           cd code/v2fly-geoip || exit 1
           cp ../config/v2fly-geoip.json ./config.json
           go run ./ 
-          cd ../../ && rm -rf code
+          cd ../ && rm -rf v2fly-geoip
+          cd ../
+
+
+      - name: Checkout MYffffff/sing-geoip
+        uses: actions/checkout@v4
+        with:
+          repository: MYffffff/sing-geoip
+          path: code/myfff-sing
+
+      - name: Update Go deps
+        run: |
+            cd code/myfff-sing
+            go mod tidy
+            cd ../../
+
+      - name: Build sing-geo
+        run: |
+          cd code/myfff-sing || exit 1
+          go run ./ --inputfile ../data/Country.mmdb --geofile ../../geoip --srsdir ../../sing-ip
+          cd ../../ && rm -rf myfff-sing
+
 
       - name: Generate Zip, XZ, sha256
         run: |
+          cd geoip 
           sha256sum geoip.dat > geoip.dat.sha256sum
+          sha256sum geoip.db > geoip.db.sha256sum
+
           zip -9 geoip.dat.zip geoip.dat
           sha256sum geoip.dat.zip > geoip.dat.zip.sha256sum
+          zip -9 geoip.db.zip geoip.db
+          sha256sum geoip.db.zip > geoip.db.zip.sha256sum
+
           xz -z -9 -k geoip.dat
           sha256sum geoip.dat.xz > geoip.dat.xz.sha256sum
+          xz -z -9 -k geoip.db
+          sha256sum geoip.db.xz > geoip.db.xz.sha256sum
+          cd ../
 
 
-      - name: Git push assets to "geoip" branch
+      - name: Git push assets to "geosite" branch
         run: |
+          cd geoip
           git init
           git config --local user.name "github-actions[bot]"
           git config --local user.email "github-actions[bot]@noreply.github.com"
           git branch -M geoip
-          git add *.sha256sum geoip.dat geoip.dat.zip geoip.dat.xz
+          git add .
           git commit -m "${{ env.RELEASE_NAME }}"
           git remote add origin "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}"
           git push -f -u origin geoip
+          cd ../
+
+      - name: Git push assets to "sing-site" branch
+        run: |
+          cd sing-ip
+          git init
+          git config --local user.name "github-actions[bot]"
+          git config --local user.email "github-actions[bot]@noreply.github.com"
+          git branch -M sing-ip
+          git add .
+          git commit -m "${{ env.RELEASE_NAME }}"
+          git remote add origin "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}"
+          git push -f -u origin sing-ip
+          cd ../
