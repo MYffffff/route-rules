@@ -59,7 +59,7 @@ jobs:
       - name: Build sing-geo
         run: |
           cd code/myfff-sing || exit 1
-          go run ./ --inputfile ../data/Country.mmdb --geofile ../../geoip/geoip.db --srsdir ../../sing-ip
+          go run ./ --inputfile ../data/Country.mmdb --inputdir ../data/ips --geofile ../../geoip/geoip.db --srsdir ../../sing-ip
           cd ../../ && rm -rf myfff-sing
 
 
