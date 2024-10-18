@@ -1,4 +1,4 @@
-name: Build geo-rules
+name: Build geoIP rules
 on:
   workflow_dispatch:
   schedule:
@@ -50,19 +50,13 @@ jobs:
           sha256sum geoip.dat.xz > geoip.dat.xz.sha256sum
 
 
-      - name: Git push assets to "release" branch
+      - name: Git push assets to "geoip" branch
         run: |
           git init
           git config --local user.name "github-actions[bot]"
           git config --local user.email "github-actions[bot]@noreply.github.com"
-          git checkout -b release
+          git branch -M geoip
           git add *.sha256sum geoip.dat geoip.dat.zip geoip.dat.xz
           git commit -m "${{ env.RELEASE_NAME }}"
           git remote add origin "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}"
-          git push -f -u origin release
-
-      - name: Release and upload assets
-        run: |
-          gh release create ${{ env.TAG_NAME }} --generate-notes --latest --title ${{ env.RELEASE_NAME }} ./geoip.dat ./geoip.dat.*
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          git push -f -u origin geoip
