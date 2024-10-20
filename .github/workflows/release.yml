@@ -1,0 +1,76 @@
+name: Release databases
+
+on:
+  push:
+    branches:
+      - geoip
+      - geosite
+      - sing-site
+      - sing-ip
+  workflow_dispatch:
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set variables
+        run: |
+          echo "RELEASE_NAME=$(date +%d.%m.%Y_%H:%M:%S)" >> $GITHUB_ENV
+          echo "TAG_NAME=$(date +%d.%m.%Y_%H:%M:%S)" >> $GITHUB_ENV
+        shell: bash
+
+      - name: Checkout geoip branch
+        uses: actions/checkout@v4
+        with:
+          ref: geoip
+          path: geoip
+
+      - name: Checkout geosite branch
+        uses: actions/checkout@v4
+        with:
+          ref: geosite
+          path: geosite
+
+      - name: Checkout sing-site
+        uses: actions/checkout@v4
+        with:
+          ref: sing-site
+          path: sing-site
+
+      - name: Checkout sing-ip
+        uses: actions/checkout@v4
+        with:
+          ref: sing-ip
+          path: sing-ip
+
+      - name: Make sing-rules xz archives
+        run: |
+          tar -cJvf sing-site.tar.xz sing-site
+          tar -cJvf sing-ip.tar.xz sing-ip
+          sha256sum sing-site.tar.xz > sing-site.tar.xz.sha256sum
+          sha256sum sing-ip.tar.xz > sing-ip.tar.xz.sha256sum
+          rm -r sing-site sing-ip
+
+      - name: Prepare packages to release
+        run: |
+          cp geoip/geoip.db.xz ./
+          cp geoip/geoip.dat.xz ./
+          cp geoip/*.xz.sha256 ./
+          cp geosite/geosite.db.xz ./
+          cp geosite/geosite.dat.xz ./
+          cp geosite/*.xz.sha256 ./
+          rm -r geosite geoip sing-site sing-ip
+
+      - uses: dev-drprasad/delete-older-releases@v0.3.4
+        with:
+            keep_latest: 3
+            keep_min_download_counts: 1
+        env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            
+      - name: Release and upload assets
+        run: |
+          gh release create ${{ env.TAG_NAME }} --generate-notes --latest --title ${{ env.RELEASE_NAME }} ./*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
