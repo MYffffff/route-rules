@@ -55,16 +55,16 @@ jobs:
       - name: Prepare packages to release
         run: |
           cp geoip/geoip.db.xz ./
-          cp geoip/geoip.db.xz.sha256 ./
+          cp geoip/geoip.db.xz.sha256sum ./
 
           cp geoip/geoip.dat.xz ./
-          cp geoip/geoip.dat.xz.sha256 ./
+          cp geoip/geoip.dat.xz.sha256sum ./
           
           cp geosite/geosite.db.xz ./
-          cp geosite/geosite.db.xz.sha256 ./
+          cp geosite/geosite.db.xz.sha256sum ./
 
           cp geosite/geosite.dat.xz ./
-          cp geosite/geosite.dat.xz.sha256 ./
+          cp geosite/geosite.dat.xz.sha256sum ./
 
           rm -r geosite geoip sing-site sing-ip
 
