@@ -46,8 +46,8 @@ jobs:
 
       - name: Make sing-rules xz archives
         run: |
-          tar -cJvf sing-site.tar.xz sing-site
-          tar -cJvf sing-ip.tar.xz sing-ip
+          tar -cJvf sing-site.tar.xz sing-site/geosite-*
+          tar -cJvf sing-ip.tar.xz sing-ip/geoip-*
           sha256sum sing-site.tar.xz > sing-site.tar.xz.sha256sum
           sha256sum sing-ip.tar.xz > sing-ip.tar.xz.sha256sum
           rm -r sing-site sing-ip
