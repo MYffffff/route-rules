@@ -16,8 +16,8 @@ jobs:
     steps:
       - name: Set variables
         run: |
-          echo "RELEASE_NAME=$(date +%d.%m.%Y_%H:%M:%S)" >> $GITHUB_ENV
-          echo "TAG_NAME=$(date +%d.%m.%Y_%H:%M:%S)" >> $GITHUB_ENV
+          echo "RELEASE_NAME=$(date +%Y%m%d%H%M%S)" >> $GITHUB_ENV
+          echo "TAG_NAME=$(date +%Y%m%d%H%M%S)" >> $GITHUB_ENV
         shell: bash
 
       - name: Checkout geoip branch
