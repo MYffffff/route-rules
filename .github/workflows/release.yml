@@ -66,7 +66,7 @@ jobs:
           cp geosite/geosite.dat.xz ./
           cp geosite/geosite.dat.xz.sha256sum ./
 
-          rm -r geosite geoip sing-site sing-ip
+          rm -r geosite geoip
 
 
       - uses: dev-drprasad/delete-older-releases@v0.3.4
