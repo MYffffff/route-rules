@@ -55,13 +55,20 @@ jobs:
       - name: Prepare packages to release
         run: |
           cp geoip/geoip.db.xz ./
+          cp geoip/geoip.db.xz.xz.sha256 ./
+
           cp geoip/geoip.dat.xz ./
-          cp geoip/*.xz.sha256 ./
+          cp geoip/geoip.dat.xz.sha256 ./
+          
           cp geosite/geosite.db.xz ./
+          cp geosite/geosite.db.xz.sha256 ./
+
           cp geosite/geosite.dat.xz ./
-          cp geosite/*.xz.sha256 ./
+          cp geosite/geosite.dat.xz.sha256 ./
+
           rm -r geosite geoip sing-site sing-ip
 
+          
       - uses: dev-drprasad/delete-older-releases@v0.3.4
         with:
             keep_latest: 3
