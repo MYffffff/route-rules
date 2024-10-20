@@ -14,7 +14,7 @@ jobs:
         run: |
           echo "RELEASE_NAME=$(date +%Y%m%d%H%M%S)" >> $GITHUB_ENV
           echo "TAG_NAME=$(date +%Y%m%d%H%M%S)" >> $GITHUB_ENV
-          mkdir geosite sing-site
+          mkdir geosite rule-set-geosite
         shell: bash
 
 
@@ -57,7 +57,7 @@ jobs:
       - name: Build geo.db
         run: |
           cd rcode || exit 1
-          go run ./ --geofile ../geosite/geosite.db --srsdir ../sing-site --inputfile ../geosite/geosite.dat
+          go run ./ --geofile ../geosite/geosite.db --srsdir ../rule-set-geosite --inputfile ../geosite/geosite.dat
           cd ../ && rm -rf rcode
 
       - name: Generate Zip, XZ, sha256
@@ -91,15 +91,15 @@ jobs:
           git push -f -u origin geosite
           cd ../
 
-      - name: Git push assets to "sing-site" branch
+      - name: Git push assets to "rule-set-geosite" branch
         run: |
-          cd sing-site
+          cd rule-set-geosite
           git init
           git config --local user.name "github-actions[bot]"
           git config --local user.email "github-actions[bot]@noreply.github.com"
-          git branch -M sing-site
+          git branch -M rule-set-geosite
           git add .
           git commit -m "${{ env.RELEASE_NAME }}"
           git remote add origin "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}"
-          git push -f -u origin sing-site
+          git push -f -u origin rule-set-geosite
           cd ../

@@ -5,8 +5,8 @@ on:
     branches:
       - geoip
       - geosite
-      - sing-site
-      - sing-ip
+      - rule-set-geosite
+      - rule-set-geoip
   workflow_dispatch:
 
 jobs:
@@ -32,37 +32,45 @@ jobs:
           ref: geosite
           path: geosite
 
-      - name: Checkout sing-site
+      - name: Checkout rule-set-geosite
         uses: actions/checkout@v4
         with:
-          ref: sing-site
-          path: sing-site
+          ref: rule-set-geosite
+          path: rule-set-geosite
 
-      - name: Checkout sing-ip
+      - name: Checkout rule-set-geoip
         uses: actions/checkout@v4
         with:
-          ref: sing-ip
-          path: sing-ip
+          ref: rule-set-geoip
+          path: rule-set-geoip
 
       - name: Make sing-rules xz archives
         run: |
-          tar -cJvf sing-site.tar.xz sing-site/geosite-*
-          tar -cJvf sing-ip.tar.xz sing-ip/geoip-*
-          sha256sum sing-site.tar.xz > sing-site.tar.xz.sha256sum
-          sha256sum sing-ip.tar.xz > sing-ip.tar.xz.sha256sum
-          rm -r sing-site sing-ip
+          tar -cJvf rule-set-geosite.tar.xz rule-set-geosite/geosite-*
+          tar -cJvf rule-set-geoip.tar.xz rule-set-geoip/geoip-*
+          sha256sum rule-set-geosite.tar.xz > rule-set-geosite.tar.xz.sha256sum
+          sha256sum rule-set-geoip.tar.xz > rule-set-geoip.tar.xz.sha256sum
+          rm -r rule-set-geosite rule-set-geoip
 
       - name: Prepare packages to release
         run: |
+          cp geoip/geoip.db ./
+          cp geoip/geoip.db.sha256sum ./
           cp geoip/geoip.db.xz ./
           cp geoip/geoip.db.xz.sha256sum ./
 
+          cp geoip/geoip.dat ./
+          cp geoip/geoip.dat.sha256sum ./
           cp geoip/geoip.dat.xz ./
           cp geoip/geoip.dat.xz.sha256sum ./
           
+          cp geosite/geosite.db ./
+          cp geosite/geosite.db.sha256sum ./
           cp geosite/geosite.db.xz ./
           cp geosite/geosite.db.xz.sha256sum ./
 
+          cp geosite/geosite.dat ./
+          cp geosite/geosite.dat.sha256sum ./
           cp geosite/geosite.dat.xz ./
           cp geosite/geosite.dat.xz.sha256sum ./
 
@@ -89,6 +97,6 @@ jobs:
 
       - name: Release and upload assets
         run: |
-          gh release create ${{ env.TAG_NAME }} --generate-notes --latest --title ${{ env.RELEASE_NAME }} ./sing-site* ./sing-ip* ./geosite* ./geoip*
+          gh release create ${{ env.TAG_NAME }} --generate-notes --latest --title ${{ env.RELEASE_NAME }} ./rule-set-geosite* ./rule-set-geoip* ./geosite* ./geoip*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

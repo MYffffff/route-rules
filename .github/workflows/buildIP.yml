@@ -14,7 +14,7 @@ jobs:
         run: |
           echo "RELEASE_NAME=$(date +%Y%m%d%H%M%S)" >> $GITHUB_ENV
           echo "TAG_NAME=$(date +%Y%m%d%H%M%S)" >> $GITHUB_ENV
-          mkdir geoip sing-ip
+          mkdir geoip rule-set-geoip
         shell: bash
 
 
@@ -59,7 +59,7 @@ jobs:
       - name: Build sing-geo
         run: |
           cd code/myfff-sing || exit 1
-          go run ./ --inputfile ../data/Country.mmdb --inputdir ../data/ips --geofile ../../geoip/geoip.db --srsdir ../../sing-ip
+          go run ./ --inputfile ../data/Country.mmdb --inputdir ../data/ips --geofile ../../geoip/geoip.db --srsdir ../../rule-set-geoip
           cd ../../ && rm -rf myfff-sing
 
 
@@ -96,13 +96,13 @@ jobs:
 
       - name: Git push assets to "sing-site" branch
         run: |
-          cd sing-ip
+          cd rule-set-geoip
           git init
           git config --local user.name "github-actions[bot]"
           git config --local user.email "github-actions[bot]@noreply.github.com"
-          git branch -M sing-ip
+          git branch -M rule-set-geoip
           git add .
           git commit -m "${{ env.RELEASE_NAME }}"
           git remote add origin "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}"
-          git push -f -u origin sing-ip
+          git push -f -u origin rule-set-geoip
           cd ../
