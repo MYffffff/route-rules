@@ -78,6 +78,7 @@ jobs:
             
       - name: Release and upload assets
         run: |
+          git init
           gh release create ${{ env.TAG_NAME }} --generate-notes --latest --title ${{ env.RELEASE_NAME }} ./*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
