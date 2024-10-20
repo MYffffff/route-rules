@@ -89,6 +89,6 @@ jobs:
 
       - name: Release and upload assets
         run: |
-          gh release create ${{ env.TAG_NAME }} --generate-notes --latest --title ${{ env.RELEASE_NAME }} ./*
+          gh release create ${{ env.TAG_NAME }} --generate-notes --latest --title ${{ env.RELEASE_NAME }} ./sing-site* ./sing-ip* ./geosite* ./geoip*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
