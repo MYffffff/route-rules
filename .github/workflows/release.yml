@@ -1,7 +1,10 @@
 name: Release databases
 
 on:
-  push:
+  workflow_run:
+    workflows: ["Build geoIP rules", "Build geoSite rules"]
+    types:
+      - completed
     branches:
       - geoip
       - geosite
