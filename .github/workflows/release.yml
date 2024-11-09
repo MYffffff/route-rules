@@ -6,10 +6,7 @@ on:
     types:
       - completed
     branches:
-      - geoip
-      - geosite
-      - rule-set-geosite
-      - rule-set-geoip
+      - master
   workflow_dispatch:
 
 jobs:
