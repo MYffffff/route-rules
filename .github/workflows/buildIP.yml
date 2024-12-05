@@ -67,6 +67,7 @@ jobs:
         run: |
           cd geoip 
           sha256sum geoip.dat > geoip.dat.sha256sum
+          sha256sum geoip-discord.dat > geoip-discord.dat.sha256sum
           sha256sum geoip.db > geoip.db.sha256sum
 
           zip -9 geoip.dat.zip geoip.dat
@@ -81,7 +82,7 @@ jobs:
           cd ../
 
 
-      - name: Git push assets to "geosite" branch
+      - name: Git push assets to "geoip" branch
         run: |
           cd geoip
           git init

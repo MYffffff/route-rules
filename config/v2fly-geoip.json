@@ -27,6 +27,15 @@
           "outputDir": "../../geoip",
           "outputName": "geoip.dat"
         }
+      },
+      {
+        "type": "v2rayGeoIPDat",
+        "action": "output",
+        "args": {
+          "outputDir": "../../geoip",
+          "outputName": "geoip-discord.dat",
+          "wantedList": ["discord"]
+        }
       }
     ]
   }
