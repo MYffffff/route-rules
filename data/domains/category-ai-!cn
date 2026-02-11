@@ -9,9 +9,11 @@ include:google-deepmind
 include:groq
 include:huggingface
 include:liveperson
+include:manus
 include:openai
 include:perplexity
 include:poe
+include:windsurf
 include:xai
 include:youmind
 
