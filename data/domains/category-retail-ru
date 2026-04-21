@@ -4,11 +4,17 @@ av.ru
 # Auchan
 auchan.ru
 
+# AudioHead
+audiohead.ru
+
 # Bristol
 bristol.ru
 
 # Children's World
 detmir.ru
+
+# Coolera
+coolera.ru
 
 # Dixie
 dixy.ru
@@ -23,6 +29,9 @@ dodostatic.net
 # Dostaevsky
 dostaevsky.ru
 
+# Dr.Head / Doctorhead
+doctorhead.ru
+
 # Eurasia
 evrasia.rest
 
@@ -32,21 +41,36 @@ vkusnoitochka.ru
 # Fix Price
 fix-price.com
 
+# Lamoda
+lamoda.ru
+
 # Lenta
 lenta.com
 lenta.tech
 
-# Magnet
-magnit.ru
+# Magnit
+include:magnit
+
+# M.Video
+include:mvideo
 
 # Metro
 metro-cc.ru
+
+# NOTIK
+notik.ru
+
+# OSKELLY
+include:oskelly
 
 # Pyaterochka, Perekrestok, Chizhik
 include:x5
 
 # Red and White
 krasnoeibeloe.ru
+
+# Regard
+regard.ru
 
 # Rostics
 rostics.ru
@@ -58,6 +82,9 @@ ilovesakura.ru
 
 # Spar
 myspar.ru
+
+# SOKOLOV
+include:sokolov
 
 # Sushi Wok
 sushiwok.ru
