@@ -5,6 +5,7 @@ steam-api.com
 steam-chat.com
 steamcommunity.com
 steamcontent.com
+steamconnecttest.com
 steamdeck.com
 steamgames.com
 steampowered.com
@@ -59,6 +60,7 @@ full:steamvideo-a.akamaihd.net
 
 # Azure
 full:steamcloudsweden.blob.core.windows.net
+full:steamugcquincy.blob.core.windows.net
 
 # 完美
 csgo.wmsj.cn @cn
